@@ -1,0 +1,9 @@
+{
+	"name": "HaoranDataFactoryTest",
+	"location": "eastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "42c08f71-4374-4b02-9dfb-11935e29b75e",
+		"tenantId": "1cc7ff2f-a6a5-48e3-8731-b3f660e4267a"
+	}
+}
