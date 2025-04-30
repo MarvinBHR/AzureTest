@@ -1,0 +1,101 @@
+{
+	"name": "Until Test",
+	"properties": {
+		"activities": [
+			{
+				"name": "Init X",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "X",
+					"value": {
+						"value": "@pipeline().parameters.InputVar",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "UntilTest",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Init X",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(int(variables('X')),10)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "SetTmpVar",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "T",
+								"value": {
+									"value": "@variables('X')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "UpateX",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "SetTmpVar",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "X",
+								"value": {
+									"value": "@{add(int(variables('T')),1)}",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"InputVar": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"X": {
+				"type": "String"
+			},
+			"T": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
