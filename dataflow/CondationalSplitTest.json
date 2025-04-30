@@ -1,0 +1,83 @@
+{
+	"name": "CondationalSplitTest",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sourcecsv",
+						"type": "DatasetReference"
+					},
+					"name": "UserTable"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "targetfolder",
+						"type": "DatasetReference"
+					},
+					"name": "SaveYoung"
+				},
+				{
+					"dataset": {
+						"referenceName": "targetfolder",
+						"type": "DatasetReference"
+					},
+					"name": "SaveMiddle"
+				},
+				{
+					"dataset": {
+						"referenceName": "targetfolder",
+						"type": "DatasetReference"
+					},
+					"name": "SaveOld"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     FileName as string",
+				"}",
+				"source(output(",
+				"          ID as string,",
+				"          Name as string,",
+				"          Gender as string,",
+				"          Age as integer,",
+				"          Email as string,",
+				"          Address as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: 1000,",
+				"     ignoreNoFilesFound: false) ~> UserTable",
+				"UserTable split(lesser(Age,20),",
+				"     Age>=20&&Age<=50,",
+				"     disjoint: false) ~> split1@(Young, Middle, Old)",
+				"split1@Young sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['youngUsers.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> SaveYoung",
+				"split1@Middle sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['middleUsers.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> SaveMiddle",
+				"split1@Old sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['oldUsers.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> SaveOld"
+			]
+		}
+	}
+}
