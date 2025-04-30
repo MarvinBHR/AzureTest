@@ -1,0 +1,62 @@
+{
+	"name": "IfCondition",
+	"properties": {
+		"activities": [
+			{
+				"name": "CheckYourIncome",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(pipeline().parameters.Income,10000)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "BadIncome",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "GoodorBad",
+								"value": false
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "GoodIncome",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "GoodorBad",
+								"value": true
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Income": {
+				"type": "float"
+			}
+		},
+		"variables": {
+			"GoodorBad": {
+				"type": "Boolean"
+			}
+		},
+		"annotations": []
+	}
+}
